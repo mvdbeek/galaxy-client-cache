@@ -11,8 +11,8 @@ jobs:
       - name: Clone Galaxy
         run: git clone --depth=1 -b ${{ matrix.branch }}  https://github.com/galaxyproject/galaxy
       - name: Build client
-        run: cd galaxy/client && yarn install --network-timeout 300000 --check-files && yarn run build && cd ../
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v1
+        run: yarn install --network-timeout 300000 --check-files && yarn run build
+        working-directory: ./galaxy/client
       - name: Archive client
         run: tar -czf ../${{ matrix.branch }}-$(cat static/client_build_hash.txt)-client.tar.gz static/
+        working-directory: ./galaxy
