@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        branch: ['master', 'dev', 'release_19.09', 'release_20.01']
+        branch: ['master', 'release_19.09', 'release_20.01']
     steps:
       - uses: actions/checkout@v2
       - name: Clone Galaxy
