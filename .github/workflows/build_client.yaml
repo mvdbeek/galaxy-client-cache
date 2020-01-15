@@ -16,8 +16,9 @@ jobs:
         run: git clone --depth=1 -b ${{ matrix.branch }}  https://github.com/galaxyproject/galaxy
       - name: Check if client build exists
         id: tag
-        run: echo "::set-output name=tag_exists::$(git tag -l | grep \"${{ matrix.branch }}\"-$(git rev-parse HEAD 2>/dev/null))"
-        working-directory: ./galaxy
+        run: echo "::set-output name=tag_exists::$(git tag -l | grep \"${{ matrix.branch }}\"-$(cd galaxy && git rev-parse HEAD 2>/dev/null))"
+      - name: show tag
+        run: echo "${{ steps.tag.outpus.tag_exists }}"
       - name: Build client
         if: steps.tag.outpus.tag_exists != ''
         run: yarn install --network-timeout 300000 --check-files && yarn run build
