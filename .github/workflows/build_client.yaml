@@ -1,0 +1,14 @@
+name: Build client
+on: [push]
+jobs:
+  build:
+    name: Build client
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        branch: ['master', 'dev', 'release_19.09', 'release_20.01']
+    steps:
+      - name: Clone Galaxy
+        run: git clone -b ${{ matrix.branch }}  https://github.com/galaxyproject/galaxy
+      - name: Build client
+        run: cd galaxy/client && yarn run build && cd ../../
