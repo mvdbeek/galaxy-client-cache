@@ -15,10 +15,11 @@ jobs:
       - name: Clone Galaxy
         run: git clone --depth=1 -b ${{ matrix.branch }}  https://github.com/galaxyproject/galaxy
       - name: Check if client build exists
-        id: commit
+        id: tag
         run: echo "::set-output name=tag_exists::$(git tag -l | grep \"${{ matrix.branch }}\"-$(git rev-parse HEAD 2>/dev/null))"
+        working-directory: ./galaxy
       - name: Build client
-        if: steps.tools.outputs.tool_list != ''
+        if: steps.tag.outpus.tag_exists != ''
         run: yarn install --network-timeout 300000 --check-files && yarn run build
         working-directory: ./galaxy/client
       - name: Archive client
@@ -29,4 +30,4 @@ jobs:
           git add static
           git commit -m "Build client for Galaxy branch ${{ matrix.branch }}, commit $(git rev-parse HEAD 2>/dev/null))"
           git tag ${{ matrix.branch }}-$(git rev-parse HEAD 2>/dev/null)
-          git push ${{ matrix.branch }}-$(git rev-parse HEAD 2>/dev/null)
+          git push origin ${{ matrix.branch }}-$(git rev-parse HEAD 2>/dev/null)
