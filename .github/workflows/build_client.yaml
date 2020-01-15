@@ -20,7 +20,7 @@ jobs:
       - name: show tag
         run: echo "${{ steps.tag.outpus.tag_exists }}"
       - name: Build client
-        if: steps.tag.outpus.tag_exists != ''
+        if: steps.tag.outpus.tag_exists == ''
         run: yarn install --network-timeout 300000 --check-files && yarn run build
         working-directory: ./galaxy/client
       - name: Archive client
