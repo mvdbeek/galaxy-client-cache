@@ -1,5 +1,8 @@
 name: Build client
-on: [push]
+on:
+  push:
+    branches:
+      - master
 jobs:
   build:
     name: Build client
@@ -8,11 +11,22 @@ jobs:
       matrix:
         branch: ['master', 'dev', 'release_19.09', 'release_20.01']
     steps:
+      - uses: actions/checkout@v2
       - name: Clone Galaxy
         run: git clone --depth=1 -b ${{ matrix.branch }}  https://github.com/galaxyproject/galaxy
+      - name: Check if client build exists
+        id: commit
+        run: echo "::set-output name=tag_exists::$(git tag -l | grep \"${{ matrix.branch }}\"-$(git rev-parse HEAD 2>/dev/null))"
       - name: Build client
+        if: steps.tools.outputs.tool_list != ""
         run: yarn install --network-timeout 300000 --check-files && yarn run build
         working-directory: ./galaxy/client
       - name: Archive client
-        run: tar -czf ../${{ matrix.branch }}-$(cat static/client_build_hash.txt)-client.tar.gz static/
-        working-directory: ./galaxy
+        run: | 
+          mv galaxy/static .
+          git config --global user.name 'mvdbeek'
+          git config --global user.email 'mvdbeek@users.noreply.github.com'
+          git add static
+          git commit -m "Build client for Galaxy branch ${{ matrix.branch }}, commit $(git rev-parse HEAD 2>/dev/null))"
+          git tag ${{ matrix.branch }}-$(git rev-parse HEAD 2>/dev/null)
+          git push ${{ matrix.branch }}-$(git rev-parse HEAD 2>/dev/null)
