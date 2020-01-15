@@ -11,4 +11,4 @@ jobs:
       - name: Clone Galaxy
         run: git clone --depth=1 -b ${{ matrix.branch }}  https://github.com/galaxyproject/galaxy
       - name: Build client
-        run: cd galaxy/client && yarn run build && cd ../../
+        run: cd galaxy/client && yarn install --network-timeout 300000 --check-files && yarn run build && cd ../../
