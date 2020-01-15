@@ -9,6 +9,6 @@ jobs:
         branch: ['master', 'dev', 'release_19.09', 'release_20.01']
     steps:
       - name: Clone Galaxy
-        run: git clone -b ${{ matrix.branch }}  https://github.com/galaxyproject/galaxy
+        run: git clone --depth=1 -b ${{ matrix.branch }}  https://github.com/galaxyproject/galaxy
       - name: Build client
         run: cd galaxy/client && yarn run build && cd ../../
