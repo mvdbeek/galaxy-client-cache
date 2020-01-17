@@ -20,13 +20,13 @@ jobs:
         id: tag
         run: echo "::set-output name=tag_exists::$(git ls-remote --tags | grep ${{ matrix.branch }}-$(cd galaxy && git rev-parse HEAD 2>/dev/null))"
       - name: show tag
-        run: echo "${{ steps.tag.outpus.tag_exists }}"
+        run: echo "${{ steps.tag.outputs.tag_exists }}"
       - name: Build client
-        if: steps.tag.outpus.tag_exists == ''
+        if: steps.tag.outputs.tag_exists == ''
         run: yarn install --network-timeout 300000 --check-files && yarn run build
         working-directory: ./galaxy/client
       - name: Archive client
-        if: steps.tag.outpus.tag_exists == ''
+        if: steps.tag.outputs.tag_exists == ''
         run: | 
           mv galaxy/static .
           git config --global user.name 'mvdbeek'
